@@ -1,3 +1,37 @@
+// Project State Management
+class ProjectStateManager {
+  private listeners: any[] = [];
+  private projects: any[] = [];
+  private static instance: ProjectStateManager;
+
+  private constructor() {}
+
+  static getInstance() {
+    if (this.instance) return this.instance;
+    else this.instance = new ProjectStateManager();
+    return this.instance;
+  }
+
+  addListener(listerner: Function) {
+    this.listeners.push(listerner);
+  }
+  addProject(title: string, description: string, numOfPeople: number) {
+    const newProject = {
+      id: Math.random().toString(),
+      title: title,
+      description: description,
+      people: numOfPeople,
+    };
+
+    this.projects.push(newProject);
+    for (const listernerFn of this.listeners) {
+      listernerFn(this.projects.slice());
+    }
+  }
+}
+
+const projectStateManager = ProjectStateManager.getInstance();
+
 // Validation
 interface Validatable {
   value: string | number;
@@ -66,6 +100,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLElement; // there is no HTMLSectionElement! Strange?
+  assignedProjects: any[];
 
   constructor(private type: "active" | "finished") {
     // uses `inline` variable declaration and initialization
@@ -73,16 +108,33 @@ class ProjectList {
       "project-list"
     )! as HTMLTemplateElement;
     this.hostElement = document.getElementById("app")! as HTMLDivElement;
+    this.assignedProjects = [];
     const importedNode = document.importNode(
       this.templateElement.content,
       true
     ); // import with all levels of deepness
     this.element = importedNode.firstElementChild as HTMLElement;
     this.element.id = `${this.type}-projects`; // this helps with CSS and other functionality that depends on element IDs in the DOM
+
+    projectStateManager.addListener((projects: any[]) => {
+      this.assignedProjects = projects;
+      this.renderProjects();
+    });
     this.attach();
     this.renderContent();
   }
 
+  private renderProjects() {
+    const listEl = document.getElementById(
+      `${this.type}-projects-list`
+    )! as HTMLUListElement;
+    for (const prjItem of this.assignedProjects) {
+      const listItem = document.createElement("li");
+      listItem.textContent = prjItem.title;
+
+      listEl.appendChild(listItem);
+    }
+  }
   private renderContent() {
     const listId = `${this.type}-projects-list`;
     this.element.querySelector("ul")!.id = listId; // Add list ID dynamically
@@ -187,7 +239,7 @@ class ProjectInputRender {
     // check if we returned a valid tuple (array in JavaScript as the concept of Tuple only exists in TypeScript)
     if (Array.isArray(userInput)) {
       const [title, desc, people] = userInput; //deconstruct userInput array (tuple)
-      console.log(title, desc, people);
+      projectStateManager.addProject(title, desc, people);
       this.clearInput();
     }
   }
