@@ -53,11 +53,43 @@ class DragenDrop {
     this.attach();
   }
 
-  // Methods
+  // Class methods
+
+  private gatherUserInput(): [string, string, number] | void {
+    const enteredTitle = this.titleInputElement.value;
+    const enteredDescription = this.descriptionInputElement.value;
+    const enteredPeople = this.peopleInputElement.value;
+
+    // trivial validation check
+
+    if (
+      enteredTitle.trim().length === 0 ||
+      enteredDescription.trim().length === 0 ||
+      enteredPeople.trim().length === 0
+    ) {
+      alert("Invalid input, please try again!");
+      return;
+    } else {
+      return [enteredTitle, enteredDescription, +enteredPeople];
+    }
+  }
+
+  private clearInput() {
+    this.titleInputElement.value = "";
+    this.descriptionInputElement.value = "";
+    this.peopleInputElement.value = "";
+  }
+
   @autobind
   private submitHandler(event: Event) {
     event.preventDefault(); // prevent default submission
-    console.log(this.titleInputElement.value);
+    const userInput = this.gatherUserInput();
+
+    // check if we returned a valid tuple (array in JavaScript as the concept of Tuple only exists in TypeScript)
+    if (Array.isArray(userInput)) {
+      const [title, desc, people] = userInput; //deconstruct userInput array (tuple)
+      console.log(title, desc, people);
+    }
   }
   private configure() {
     this.element.addEventListener("submit", this.submitHandler);
