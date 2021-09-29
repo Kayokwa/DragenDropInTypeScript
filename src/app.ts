@@ -60,8 +60,42 @@ function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
   return adjDescriptor;
 }
 
-// DragenDrop Class
-class DragenDrop {
+// 2. ProjectListClass
+class ProjectList {
+  // DOM element variables
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLElement; // there is no HTMLSectionElement! Strange?
+
+  constructor(private type: "active" | "finished") {
+    // uses `inline` variable declaration and initialization
+    this.templateElement = document.getElementById(
+      "project-list"
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    ); // import with all levels of deepness
+    this.element = importedNode.firstElementChild as HTMLElement;
+    this.element.id = `${this.type}-projects`; // this helps with CSS and other functionality that depends on element IDs in the DOM
+    this.attach();
+    this.renderContent();
+  }
+
+  private renderContent() {
+    const listId = `${this.type}-projects-list`;
+    this.element.querySelector("ul")!.id = listId; // Add list ID dynamically
+    this.element.querySelector("h2")!.textContent =
+      this.type.toUpperCase() + "PROJECTS"; // Add list ID dynamically
+  }
+  private attach() {
+    this.hostElement.insertAdjacentElement("beforeend", this.element);
+  }
+}
+
+// 1. ProjectInputRender Class - only responsible for rendering the input form
+class ProjectInputRender {
   // DOM element variables
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
@@ -165,4 +199,6 @@ class DragenDrop {
   }
 }
 
-const projectDnD = new DragenDrop();
+const projectRenderer = new ProjectInputRender();
+const activeProjects = new ProjectList("active");
+const finishedProjects = new ProjectList("finished");
