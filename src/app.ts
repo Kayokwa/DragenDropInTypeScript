@@ -1,7 +1,27 @@
+// Project Type
+enum ProjectStatus {
+  Active,
+  Finished,
+}
+
+// Project
+class Project {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public people: number,
+    public status: ProjectStatus
+  ) {}
+}
+
+// Create a Listener type
+type Listener = (items: Project[]) => void;
+
 // Project State Management
 class ProjectStateManager {
-  private listeners: any[] = [];
-  private projects: any[] = [];
+  private listeners: Listener[] = [];
+  private projects: Project[] = [];
   private static instance: ProjectStateManager;
 
   private constructor() {}
@@ -12,16 +32,18 @@ class ProjectStateManager {
     return this.instance;
   }
 
-  addListener(listerner: Function) {
+  addListener(listerner: Listener) {
     this.listeners.push(listerner);
   }
+
   addProject(title: string, description: string, numOfPeople: number) {
-    const newProject = {
-      id: Math.random().toString(),
-      title: title,
-      description: description,
-      people: numOfPeople,
-    };
+    const newProject = new Project(
+      Math.random().toString(),
+      title,
+      description,
+      numOfPeople,
+      ProjectStatus.Active
+    );
 
     this.projects.push(newProject);
     for (const listernerFn of this.listeners) {
@@ -100,7 +122,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   element: HTMLElement; // there is no HTMLSectionElement! Strange?
-  assignedProjects: any[];
+  assignedProjects: Project[];
 
   constructor(private type: "active" | "finished") {
     // uses `inline` variable declaration and initialization
@@ -116,7 +138,7 @@ class ProjectList {
     this.element = importedNode.firstElementChild as HTMLElement;
     this.element.id = `${this.type}-projects`; // this helps with CSS and other functionality that depends on element IDs in the DOM
 
-    projectStateManager.addListener((projects: any[]) => {
+    projectStateManager.addListener((projects: Project[]) => {
       this.assignedProjects = projects;
       this.renderProjects();
     });
