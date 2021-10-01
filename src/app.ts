@@ -193,7 +193,8 @@ class ProjectItem
 
   @autobind
   dragStartHandler(event: DragEvent) {
-    console.log(event);
+    event.dataTransfer!.setData("text/plain", this.project.id);
+    event.dataTransfer!.effectAllowed = "move";
   }
 
   @autobind
@@ -227,13 +228,16 @@ class ProjectList
   }
 
   @autobind
-  dragOverHandler(_: DragEvent): void {
-    const listElem = this.element.querySelector("ul")!;
-    listElem.classList.add("droppable");
+  dragOverHandler(event: DragEvent): void {
+    if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+      event.preventDefault();
+      const listElem = this.element.querySelector("ul")!;
+      listElem.classList.add("droppable");
+    }
   }
 
-  dropHandler(_: DragEvent): void {
-    throw new Error("Method not implemented.");
+  dropHandler(event: DragEvent): void {
+    console.log(event);
   }
   @autobind
   dragLeaveHandler(_: DragEvent): void {
