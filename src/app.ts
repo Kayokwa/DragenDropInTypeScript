@@ -62,8 +62,20 @@ class ProjectStateManager extends State<Project> {
     );
 
     this.projects.push(newProject);
+    this.updateListeners();
+  }
+
+  updateListeners() {
     for (const listernerFn of this.listeners) {
       listernerFn(this.projects.slice());
+    }
+  }
+
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const foundProject = this.projects.find((prj) => prj.id === projectId);
+    if (foundProject && foundProject.status !== newStatus) {
+      foundProject.status = newStatus;
+      this.updateListeners();
     }
   }
 }
@@ -236,9 +248,15 @@ class ProjectList
     }
   }
 
+  @autobind
   dropHandler(event: DragEvent): void {
-    console.log(event);
+    const projectId = event.dataTransfer!.getData("text/plain");
+    projectStateManager.moveProject(
+      projectId,
+      this.type === "active" ? ProjectStatus.Active : ProjectStatus.Finished
+    );
   }
+
   @autobind
   dragLeaveHandler(_: DragEvent): void {
     const listElem = this.element.querySelector("ul")!;
