@@ -1,3 +1,8 @@
+/// <reference path="base-component.ts"/>
+/// <reference path="../util/validation.ts"/>
+/// <reference path="../decorators/autobind.ts"/>
+/// <reference path="../state/project-state.ts"/>
+
 namespace App {
   // 1. ProjectInputRender Class - only responsible for rendering the input form
   export class ProjectInputRender extends Component<

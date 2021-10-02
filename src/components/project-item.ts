@@ -1,3 +1,8 @@
+/// <reference path="base-component.ts"/>
+/// <reference path="../decorators/autobind.ts"/>
+/// <reference path="../models/project.ts"/>
+/// <reference path="../models/drag-drop.ts"/>
+
 namespace App {
   // 6. Project Item class - responsible for rendering project items
   export class ProjectItem

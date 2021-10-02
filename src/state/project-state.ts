@@ -52,5 +52,5 @@ namespace App {
     }
   }
 
-  export const pStateManager = ProjectStateManager.getInstance();
+  export const projectStateManager = ProjectStateManager.getInstance();
 }
