@@ -1,14 +1,12 @@
-namespace App {
-  // Add an autobind decorator: Better than using .bind(this) one very call
-  export function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-    const adjDescriptor: PropertyDescriptor = {
-      configurable: true,
-      get() {
-        const boundFn = originalMethod.bind(this);
-        return boundFn;
-      },
-    };
-    return adjDescriptor;
-  }
+// Add an autobind decorator: Better than using .bind(this) one very call
+export function autobind(_: any, _2: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  const adjDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFn = originalMethod.bind(this);
+      return boundFn;
+    },
+  };
+  return adjDescriptor;
 }

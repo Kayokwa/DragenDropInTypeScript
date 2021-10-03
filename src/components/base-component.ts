@@ -1,43 +1,38 @@
-namespace App {
-  // 5. Component base class
-  export abstract class Component<
-    T extends HTMLElement,
-    U extends HTMLElement
-  > {
-    // DOM element variables
-    templateElement: HTMLTemplateElement;
-    hostElement: T;
-    element: U;
+// 5. Component base class
+export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+  // DOM element variables
+  templateElement: HTMLTemplateElement;
+  hostElement: T;
+  element: U;
 
-    constructor(
-      templateId: string,
-      hostElementId: string,
-      insertAtStart: boolean,
-      newElementId?: string
-    ) {
-      // uses `inline` variable declaration and initialization
-      this.templateElement = document.getElementById(
-        templateId
-      )! as HTMLTemplateElement;
-      this.hostElement = document.getElementById(hostElementId)! as T;
+  constructor(
+    templateId: string,
+    hostElementId: string,
+    insertAtStart: boolean,
+    newElementId?: string
+  ) {
+    // uses `inline` variable declaration and initialization
+    this.templateElement = document.getElementById(
+      templateId
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById(hostElementId)! as T;
 
-      const importedNode = document.importNode(
-        this.templateElement.content,
-        true
-      ); // import with all levels of deepness
-      this.element = importedNode.firstElementChild as U;
-      if (newElementId) this.element.id = newElementId; // set element ID if need be
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    ); // import with all levels of deepness
+    this.element = importedNode.firstElementChild as U;
+    if (newElementId) this.element.id = newElementId; // set element ID if need be
 
-      this.attach(insertAtStart);
-    }
-
-    private attach(insertAtBeginning: boolean) {
-      this.hostElement.insertAdjacentElement(
-        insertAtBeginning ? "afterbegin" : "beforeend",
-        this.element
-      );
-    }
-    abstract configure(): void;
-    abstract renderContent(): void;
+    this.attach(insertAtStart);
   }
+
+  private attach(insertAtBeginning: boolean) {
+    this.hostElement.insertAdjacentElement(
+      insertAtBeginning ? "afterbegin" : "beforeend",
+      this.element
+    );
+  }
+  abstract configure(): void;
+  abstract renderContent(): void;
 }
