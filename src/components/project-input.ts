@@ -1,6 +1,6 @@
 import { Component } from "./base-component";
-import { autobind } from "../decorators/autobind.js";
-import { projectStateManager } from "../state/project-state.js";
+import { autobind } from "../decorators/autobind";
+import { projectStateManager } from "../state/project-state";
 import { Validatable, validate } from "../util/validation";
 
 // 1. ProjectInputRender Class - only responsible for rendering the input form

@@ -1,7 +1,7 @@
 import { Component } from "./base-component";
 import { Draggrable } from "../models/drag-drop";
 import { Project } from "../models/project";
-import { autobind } from "../decorators/autobind.js";
+import { autobind } from "../decorators/autobind";
 
 // 6. Project Item class - responsible for rendering project items
 export class ProjectItem
